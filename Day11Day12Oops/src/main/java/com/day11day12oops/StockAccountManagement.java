@@ -15,7 +15,11 @@ public class StockAccountManagement {
 		/**
 		 * creating object of StockManager
 		 */
-		StockManager sm = new StockManager();                                                     
+		StockManager sm = new StockManager();
+		/*
+		 * creating object of Account
+		 */
+		Account ac = new Account();
 		/**
 		 * will iterate till we close the scanner
 		 */
@@ -41,8 +45,26 @@ public class StockAccountManagement {
 				 */
 				sm.printStock();
 				break;
-
 			case 3:
+				/**
+				 *  calling the credit method to credit in account
+				 */
+				ac.credit();
+				break;
+				/**
+				 *  calling the debit method to debit in account
+				 */
+			case 4:
+				ac.debit();
+				break;
+				/**
+				 *  calling the amountUpdate method to print account balance
+				 */
+			case 5:
+				ac.amountUpdate();
+				break;
+
+			case 6:
 				System.out.println("Exited from stock account management program");
 				sc.close();   
 				return;

@@ -1,5 +1,8 @@
 package com.day11day12oops;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * StockPortfolio class holding the list of stocks ,read from the input file 
  *
@@ -9,14 +12,25 @@ public class StockPortfolio {
 	/**
 	 * variable declaration
 	 */
+	List<StockPortfolio> stock = new ArrayList<StockPortfolio>(); 
 	private String stockName;
 	private int quantity;
 	private double perSharePrice;
 	private double totalSharePrice;
+	private static double totalValue;
 
 	/**
 	 * getters and setters
 	 */
+	public List<StockPortfolio> getStock(){
+		return stock;
+	}
+
+	public void setStock(List<StockPortfolio> stock) {
+		this.stock = stock;
+	}
+
+	
 	public String getStockName() {
 		return stockName;
 	}
@@ -49,6 +63,14 @@ public class StockPortfolio {
 		this.totalSharePrice = totalSharePrice;
 	}
 	
+	public static double getTotalValue() {
+		return totalValue;
+	}
+
+	public static void setTotalValue(double totalValue) {
+		StockPortfolio.totalValue = totalValue;
+	}
+
 	/*
 	 * 
 	 * toString method
