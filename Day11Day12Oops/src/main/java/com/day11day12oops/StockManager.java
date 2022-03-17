@@ -14,80 +14,113 @@ public class StockManager {
 	 * ArrayList to maintain stocks data
 	 */
 	List<StockPortfolio> stocks = new ArrayList<StockPortfolio>();
-	double totalValue = 0;
-
-	StockPortfolio port = new StockPortfolio();
-
-	public void addStock() {
-		if (StockPortfolio.getTotalValue() < Account.getAmount() || Account.getAmount() > 1) {
-
-			Scanner sc = new Scanner(System.in);
-			System.out.println("Enter total number of stocks to buy : ");
-			int s = sc.nextInt();
-			double value = 0;
-			/*
-			 * Getting stock info from user and add number of stocks
-			 */
-			for (int i = 0; i < s; i++) {
-				/*
-				 * creating the object of StockPortfolio to set stock info
-				 */
-				StockPortfolio stock = new StockPortfolio();
-				/*
-				 * Taking input for stock from user and setting the value
-				 */
-				System.out.println("Please enter the name of the Stock: ");
-				stock.setStockName(sc.next());
-				System.out.println("Please enter the total number of shares you want to buy : ");
-				stock.setQuantity(sc.nextInt());
-				System.out.println("Please enter the price per share: ");
-				stock.setPerSharePrice(sc.nextDouble());
-
-				/**
-				 * calculating value of stock
-				 */
-				value = stock.getQuantity() * stock.getPerSharePrice();
-				/*
-				 * checking if stock value is less than account balance
-				 */
-				if (value < Account.getAmount()) {
-					/*
-					 * setting total share price as value
-					 */
-					stock.setTotalSharePrice(value);
-					/*
-					 * debit amount by stock value
-					 */
-					Account.amount -= value;
-					stocks.add(stock); //added stock to list
-					/**
-					 * calculating the total value of all stocks
-					 */
-					totalValue += value;
-					StockPortfolio.setTotalValue(totalValue);
-				} else {
-					//print insufficient balance to add stock
-					System.out.println("Sorry .. Insufficient balance in account to buy stocks");
-					break;
-				}
-
-			}
-		sc.close();
-		} else {
-			System.out.println("Unable to add shares due to insufficent balance in account");
-			;
-		}
+	
+	Scanner sc = new Scanner(System.in);
+	
+	/*
+	 * this method prints account balance 
+	 */
+	public double valueOf() {
+		System.out.println("The cuurent Account Balance is : " +Account.getAmount());
+		return Account.getAmount();
 	}
+
+	public StockPortfolio findStock(String name) {
+		for(StockPortfolio temp : stocks) {
+			/*
+			 * checking user stock matches the list stock
+			 */
+			if(temp.getStockName().equals(name)) {
+				return temp;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Method to create stock
+	 * @param name - name of the stock
+	 * @return -stock
+	 */
+	public StockPortfolio createStock(String name) {
+		
+		System.out.println("Enter the price per Share :");
+		double pricePerShare = sc.nextDouble();
+		
+		StockPortfolio stock = new StockPortfolio();
+		stock.setStockName(name);
+		stock.setQuantity(0);
+		stock.setPerSharePrice(pricePerShare);
+		stocks.add(stock);
+		
+		return stock;
+	} 
+	
+	/**
+	 * Method to buy Stocks
+	 * @param amount - amount for buying shares
+	 * @param symbol - symbol for share
+	 */
+	public void buy(int amount,String symbol) {
+		if(amount > Account.getAmount()) {
+			System.out.println("Insufficient fund");
+			return;
+		}
+		
+		StockPortfolio stock = findStock(symbol);
+		/*
+		 * if findStock is null then call createStockMethod
+		 */
+		if(stock == null) {
+			stock = createStock(symbol);
+		}
+		
+		int quantity = (int)(amount / stock.getPerSharePrice());
+		double debitValue = quantity * stock.getPerSharePrice();
+		Account.debit(debitValue);
+		stock.setQuantity(quantity + stock.getQuantity());
+		stock.setTotalSharePrice(stock.getQuantity() * stock.getPerSharePrice());
+	}
+	
+	/**
+	 * Method to sell the stocks 
+	 * @param amount - amount to sell share
+	 * @param symbol - symbol for shares
+	 */
+	
+	public void sell(int amount, String symbol) {
+		StockPortfolio stock = findStock(symbol);
+		
+		if(stock == null) {
+			System.out.println("You cant buy this stock");
+			return;
+		}
+		int quantity = (int)(amount / stock.getPerSharePrice());
+		
+		if(quantity > stock.getQuantity()) {
+			quantity = stock.getQuantity();
+		}
+		
+		stock.setQuantity(stock.getQuantity() - quantity);
+		
+		double stockValue = stock.getQuantity() * stock.getPerSharePrice();
+		stock.setTotalSharePrice(stockValue);
+		
+		double creditValue = stock.getPerSharePrice() * quantity;
+		Account.credit(creditValue);
+	}
+	
 
 	/**
 	 * printing the stocks report
 	 */
-	public void printStock() {
-		
-		for (StockPortfolio stocks : stocks) {
-			System.out.println(stocks);
+	public void printStockReport() {
+		List<StockPortfolio> temp = stocks;
+		int value = 0;
+		for (StockPortfolio stock : temp) {
+			System.out.println(stock);
+			value += stock.getTotalSharePrice();
 		}
-		System.out.println(" \n Total value of stock in your trading account is: " + totalValue);
-
+		System.out.println("Your Entire portfolio is worth : "+value);
 	}
 }

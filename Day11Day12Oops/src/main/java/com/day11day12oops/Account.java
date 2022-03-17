@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class Account {
 
-	static int amount = 0;
+	static double amount = 0;
 	
 	Scanner sc = new Scanner(System.in);
 	/*
@@ -12,41 +12,37 @@ public class Account {
 	 */
 	StockManager sm = new StockManager();
 	
-	
-	public static int getAmount() {
+	//getter setter of amount
+	public static double getAmount() {
 		return amount;
 	}
-	public static void setAmount(int amount) {
+	public static void setAmount(double amount) {
 		Account.amount = amount;
 	}
 	
 	/*
 	 * method to credit amount into account
 	 */
-	public void credit() {
-		System.out.println("Enter Ammout ot credit in account :");
-		double creditValue = sc.nextDouble();
+	public static void credit(double creditValue) {
+	
+		double tempAmount = Account.getAmount();
+		tempAmount += creditValue;
+		Account.setAmount(tempAmount);
 		
-		amount += creditValue;
-		System.out.println("Current Balance is :" +amount);
+		System.out.println("Current Balance is :" +Account.getAmount());
 	}
 	/*
 	 *This Method to withdraw amount from account
 	 */
-	public void debit() {
-		System.out.println("Enter Amount to debit from account  :");
-		double debitValue = sc.nextDouble();
-		if(amount - debitValue < 0) {
+	public static boolean debit(double debitValue) {
+		if(Account.getAmount() - debitValue < 0) {
 			System.out.println("Insufficint funds");
-			return;
+			return false;
 		}
-		amount -=debitValue;
-		System.out.println("Current Balance is :" +amount);
+		double tempAmount = Account.getAmount();
+		tempAmount -= debitValue;
+		Account.setAmount(tempAmount);
+		return true;
 	}
-	/*
-	 * This method prints the total amount in account
-	 */
-	public void amountUpdate() {
-		System.out.println("Total Balance is : "+amount);
-	}
+	
 }
